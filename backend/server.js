@@ -165,14 +165,10 @@ if (foundBuildPath) {
     index: false // Don't serve index.html for directories
   }));
   
-  // For all non-API routes, serve index.html
-  app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api')) {
-      return next(); // Let API routes handle API requests
-    }
-    res.sendFile(path.join(foundBuildPath, 'index.html'));
-  });
-
+// Serve React app for all non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(foundBuildPath, 'index.html'));
+});
 //-------
 } else {
   console.log(' Frontend build not found in any path');
