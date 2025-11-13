@@ -162,22 +162,6 @@ if (foundBuildPath) {
 //----------
 
 // Test route to check if frontend files are accessible
-app.get('/test-frontend', (req, res) => {
-  if (foundBuildPath) {
-    const indexPath = path.join(foundBuildPath, 'index.html');
-    const staticPath = path.join(foundBuildPath, 'static');
-    
-    res.json({
-      buildPath: foundBuildPath,
-      indexExists: fs.existsSync(indexPath),
-      staticExists: fs.existsSync(staticPath),
-      buildContents: fs.readdirSync(foundBuildPath)
-    });
-  } else {
-    res.json({ error: 'No build path found' });
-  }
-});
-
 
 
 app.listen(PORT, () => {
