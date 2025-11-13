@@ -136,7 +136,6 @@ app.get('/', (req, res) => {
 
 //---------
 // Serve frontend build if exists (CRA / Vite)
-// Serve frontend build if exists
 const possibleBuildPaths = [
   path.join(__dirname, '..', 'frontend', 'build'),
   path.join(__dirname, '..', 'frontend', 'dist'),
@@ -155,11 +154,9 @@ if (foundBuildPath) {
   // Serve static files
   app.use(express.static(foundBuildPath));
   
-  // For all GET requests not starting with /api, serve index.html
-  app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api')) {
-      res.sendFile(path.join(foundBuildPath, 'index.html'));
-    }
+  // Serve React app for the root route
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(foundBuildPath, 'index.html'));
   });
 } else {
   console.log('❌ Frontend build not found');
