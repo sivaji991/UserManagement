@@ -149,12 +149,31 @@ possibleBuildPaths.forEach(p => {
 
 const foundBuildPath = possibleBuildPaths.find((p) => fs.existsSync(p));
 
+// if (foundBuildPath) {
+//   console.log(' Serving frontend from:', foundBuildPath);
+//   app.use(express.static(foundBuildPath));
+//   app.get(/.*/, (req, res) => {
+//     res.sendFile(path.join(foundBuildPath, 'index.html'));
+//   });
+
+//-----------
 if (foundBuildPath) {
-  console.log(' Serving frontend from:', foundBuildPath);
-  app.use(express.static(foundBuildPath));
-  app.get(/.*/, (req, res) => {
+  console.log('✅ Serving frontend from:', foundBuildPath);
+  
+  // Serve static files from build folder with correct base path
+  app.use(express.static(foundBuildPath, {
+    index: false // Don't serve index.html for directories
+  }));
+  
+  // For all non-API routes, serve index.html
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next(); // Let API routes handle API requests
+    }
     res.sendFile(path.join(foundBuildPath, 'index.html'));
   });
+
+//-------
 } else {
   console.log(' Frontend build not found in any path');
   console.log('To serve frontend from backend, run: cd frontend && npm run build');
