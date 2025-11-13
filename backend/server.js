@@ -155,9 +155,9 @@ if (foundBuildPath) {
   app.use(express.static(foundBuildPath));
   
   // Serve React app for the root route
-  app.get('/', (req, res) => {
-    res.sendFile(path.join(foundBuildPath, 'index.html'));
-  });
+  app.get(/^(?!\/api).*/, (req, res) => {
+  res.sendFile(path.join(foundBuildPath, 'index.html'));
+});
 } else {
   console.log('❌ Frontend build not found');
 }
