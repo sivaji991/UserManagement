@@ -210,7 +210,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000/api';
+// const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000/api';
+// Use relative path in production, localhost in development
+const API_BASE = process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:5000/api';
 
 function App() {
   const [users, setUsers] = useState([]);
