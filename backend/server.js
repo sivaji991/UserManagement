@@ -136,12 +136,12 @@ app.get('/', (req, res) => {
 
 //---------
 // Serve frontend build if exists (CRA / Vite)
+// Serve frontend build if exists
 const possibleBuildPaths = [
   path.join(__dirname, '..', 'frontend', 'build'),
   path.join(__dirname, '..', 'frontend', 'dist'),
 ];
 
-// DEBUG: Log all possible paths
 console.log('DEBUG: Looking for frontend build in these paths:');
 possibleBuildPaths.forEach(p => {
   console.log('  -', p, 'exists:', fs.existsSync(p));
@@ -149,30 +149,20 @@ possibleBuildPaths.forEach(p => {
 
 const foundBuildPath = possibleBuildPaths.find((p) => fs.existsSync(p));
 
-// if (foundBuildPath) {
-//   console.log(' Serving frontend from:', foundBuildPath);
-//   app.use(express.static(foundBuildPath));
-//   app.get(/.*/, (req, res) => {
-//     res.sendFile(path.join(foundBuildPath, 'index.html'));
-//   });
-
-//-----------
 if (foundBuildPath) {
   console.log('✅ Serving frontend from:', foundBuildPath);
   
-  // Serve static files from build folder with correct base path
-  app.use(express.static(foundBuildPath, {
-    index: false // Don't serve index.html for directories
-  }));
+  // Serve static files
+  app.use(express.static(foundBuildPath));
   
-// Serve React app for all non-API routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(foundBuildPath, 'index.html'));
-});
-//-------
+  // For all GET requests not starting with /api, serve index.html
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(foundBuildPath, 'index.html'));
+    }
+  });
 } else {
-  console.log(' Frontend build not found in any path');
-  console.log('To serve frontend from backend, run: cd frontend && npm run build');
+  console.log('❌ Frontend build not found');
 }
 //----------
 
