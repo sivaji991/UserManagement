@@ -118,21 +118,48 @@ app.get('/', (req, res) => {
 });
 
 // Serve frontend build if exists (CRA / Vite)
+// const possibleBuildPaths = [
+//   path.join(__dirname, '..', 'frontend', 'build'),
+//   path.join(__dirname, '..', 'frontend', 'dist'),
+// ];
+// const foundBuildPath = possibleBuildPaths.find((p) => fs.existsSync(p));
+
+// if (foundBuildPath) {
+//   console.log(' Serving frontend from:', foundBuildPath);
+//   app.use(express.static(foundBuildPath));
+//   app.get(/.*/, (req, res) => {
+//     res.sendFile(path.join(foundBuildPath, 'index.html'));
+//   });
+// } else {
+//   console.log('Frontend build not found. To serve frontend from backend, run: cd frontend && npm run build');
+// }
+
+//---------
+// Serve frontend build if exists (CRA / Vite)
 const possibleBuildPaths = [
   path.join(__dirname, '..', 'frontend', 'build'),
   path.join(__dirname, '..', 'frontend', 'dist'),
 ];
+
+// DEBUG: Log all possible paths
+console.log('DEBUG: Looking for frontend build in these paths:');
+possibleBuildPaths.forEach(p => {
+  console.log('  -', p, 'exists:', fs.existsSync(p));
+});
+
 const foundBuildPath = possibleBuildPaths.find((p) => fs.existsSync(p));
 
 if (foundBuildPath) {
-  console.log('📦 Serving frontend from:', foundBuildPath);
+  console.log(' Serving frontend from:', foundBuildPath);
   app.use(express.static(foundBuildPath));
   app.get(/.*/, (req, res) => {
     res.sendFile(path.join(foundBuildPath, 'index.html'));
   });
 } else {
-  console.log('ℹ️ Frontend build not found. To serve frontend from backend, run: cd frontend && npm run build');
+  console.log(' Frontend build not found in any path');
+  console.log('To serve frontend from backend, run: cd frontend && npm run build');
 }
+//----------
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
